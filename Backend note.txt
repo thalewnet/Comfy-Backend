@@ -1,0 +1,121 @@
+Backend part
+
+1. npm init -y 
+2. npm i express mysql2 sequelize cors bycryptjs
+3. sequelize init:config => config "development" database and user password
+4. sequelize db:create
+4. sequelize init:models
+4. create folder controllers, routes
+5. create app.js (login register ไว้หน้านี้)
+6. app.js => import express bycrypt / app.express() / app.use(express.json() / app.use(cors())
+7. create model each table in models folder 
+8. sequelize.sync() => create table into db => then comment or close this code
+9. config route in each controller
+
+
+
+// JWT => เป็น sync 
+=> โดยปกติแล้ว token จะแนบไปกับส่วนของ request headerที่ชื่อว่า authorization และค่าของมันคือ 'Bearer token'
+header:{authorization:'Bearer your token'} 
+
+1. npm i jsonwebtoken
+2. import jwt 
+3. funtion generate token จะใส่ไว้ใน path login when logged success res JWT 
+
+// ***** ตอน set state ของ user ต้องใช้ค่าจาก response 
+
+
+// Env ของ project (npm i dotenv)
+1. สร้างไฟล์ .env ไว้ที่ root folder  
+2. เอาค่าพวก secret key, Api key ไปเก็บไว้ใน .env
+3. โดย env จะเก็บค่าใน .env ไว้ใน object ที่ชื่อ process ที่มี key ชื่อ env หรือเรียกใช้ process.env 
+ตัวอย่างการใช้ 
+const port = process.env.PORT || 8000; (หลัง || คือการใส่ default หากใน .env ไม่มี PORT)
+
+
+// Passport js JWT (password-Jwt)
+
+passport คือ  authenication middleware  จะคอยช่วยดับจับ Error ให้โดยเราไม่ต้องมันเขียน error จับแต่ละ case เอง
+
+
+In part Back-end
+
+1.import const {Strategy: JwtStrategy, ExtractJwt} = require('passport-jwt')
+
+2.const jwtStrategy = new JwtStrategy(options, (payload, done) => {});
+
+3. const options = {
+  secretOrKey: process.env.JWT_SECRET_KEY, // define secret key to verify token
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // define where to extract jwt from
+};
+
+
+//  multer => middle multipart form data
+
+fieldname = key ของ body ที่จะส่งมาให้กับหลังบ้าน
+
+const multer = require('multer');
+app.use('/public', express.static('public'));
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      console.log(file);
+      cb(null, 'public/images');
+    },
+    filename: (req, file, cb) => {
+      cb(null, new Date().getTime() + '.' + file.mimetype.split('/')[1]);
+    },
+  }),
+});
+
+app.post(
+  '/upload',
+  upload.single('thisisuploadinput'),
+  async (req, res, next) => {
+    try {
+      await Todo.update({ imageUrl: req.file.path }, { where: { id: 1 } });
+      console.log(req.file);
+      res.json({ message: 'Upload success' });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+
+
+//Cloudinary
+
+// npm i cloudinary
+
+
+config in env 
+
+
+
+
+// login register forget Authenticate ใส่ไว้ใน AuthController 
+
+
+
+
+
+
+
+** Must Have set Access-Control-Allow-Origin: * เพื่อให้มีการร้องขอที่ข้าม domain ผ่าน
+
+// local storage เป็น global variable => ไว้เก็บค่าต้องการเก็บไว้ โดย มี parameter 2 ตัว => 1. ชื่อ key ที่จะเก็บ 2. ค่าที่จะเก็บ
+
+// err.response => จะเกิดขึ้นเมื่อ catch err
+// Console.dir() ใช้ log เพื่อดู Error Object ที่สร้างขึ้นมา ใช้สำหรับช่วง development
+//  Axios Response จะเป็น Obj data = {}
+
+belongsTo ใช้โมลเดลด้านหลังเป็น fk
+hasMany ใช้ model ด้านหน้ามาเป็น fk
+hasOne ใช้ model 
+
+jwt.verify => เป็น payload ที่ใส่เข้าไปตอน sign 
+
+// *** async middleware ต้องไปศึกษาเพิ่ม ใช้แล้วจะไม่ต้องเขียน try catch ครอบ
+
+401 ไม่รู้เป็นใคร แต่จะพยายาม authorize 

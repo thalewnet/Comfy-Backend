@@ -1,0 +1,23 @@
+General note 
+ตัวอย่างใช้ axios ที่ส่ง Header ไปด้วย
+
+axios.post('http://localhost:8000/todos',{title,status},{headers:{authorization: `Bearer ${localStorage.getItem('token')}`}})
+
+สร้างไว้ folder Config ไฟล์ axios  ไว้ในฝั่ง front-end โดยการ config เพื่อแนบ header ไปกับทุก req
+
+Interceptor => ไว้คอยดักจับ req ,res ระหว่่าง Client กับ Server  ทุก req หรือ res จะต้องวิ่งผ่าน interceptor ก่อน
+
+
+ขาออก หรือ request interceptor 
+axios.interceptors.request.use(config =>{},err
+วิธีใช้ดูผ่าน doc ของ axios 
+
+
+
+Server Interceptor หรือ ResponseInterceptor
+
+มักใช้กับกรณีตอน res.status(401) กรณี token หมดอายุ
+
+เขียนใน axios ฝั่ง front เหมือนกัน
+
+axios.interceptor.response.use(response => {},err => {})
