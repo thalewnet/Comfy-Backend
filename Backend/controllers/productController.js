@@ -39,41 +39,43 @@ exports.getProductbyId = async (req, res, next) => {
 };
 exports.getAllImported = async (req, res, next) => {};
 exports.getAllLocal = async (req, res, next) => {};
+
 exports.createProduct = async (req, res, next) => {
   try {
+    console.log('InCreate backend');
     // console.log(req.file);
-
     const { name, type, description, process, price, status } = req.body;
+    console.log();
     // const result = await uploadPromise(req.file.path);
-    const product = await Product.create({
-      name,
-      type,
-      description,
-      imageUrl: 'รูปภาพแม่จันใต้',
-      // imageUrl: result.secure_url,
-    });
-    const sku = await Sku.bulkCreate([
-      {
-        process: process[0] ? process[0] : 'wet',
-        price: process[0] ? price[0] : null,
-        status: price[0] ? status[0] : false,
-        productId: product.id,
-      },
-      {
-        process: process[1] ? process[1] : 'dry',
-        price: process[1] ? price[1] : null,
-        status: price[1] ? status[1] : false,
-        productId: product.id,
-      },
-      {
-        process: process[2] ? process[2] : 'honey',
-        price: process[2] ? price[2] : null,
-        status: price[2] ? status[2] : false,
-        productId: product.id,
-      },
-    ]);
+    // const product = await Product.create({
+    //   name,
+    //   type,
+    //   description,
+    //   imageUrl: result.secure_url,
+    // });
+    // const sku = await Sku.bulkCreate([
+    //   {
+    //     process: process[0],
+    //     price: process[0] ? price[0] : null,
+    //     status: price[0] ? status[0] : false,
+    //     productId: product.id,
+    //   },
+    //   {
+    //     process: process[1],
+    //     price: process[1] ? price[1] : null,
+    //     status: price[1] ? status[1] : false,
+    //     productId: product.id,
+    //   },
+    //   {
+    //     process: process[2],
+    //     price: process[2] ? price[2] : null,
+    //     status: price[2] ? status[2] : false,
+    //     productId: product.id,
+    //   },
+    // ]);
     // fs.unlinkSync(req.file.path);
-    res.json({ message: 'Ceeate complete', product, sku });
+    // res.json({ message: 'Ceeate complete', product, sku });
+    res.json({ message: 'Create complete' });
   } catch (err) {
     next(err);
   }

@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
           isNumeric: true,
         },
       },
+      comment: DataTypes.STRING,
     },
     {
       underscored: true,

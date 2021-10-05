@@ -78,6 +78,7 @@ exports.createOrder = async (req, res, next) => {
       subdistrict,
       district,
       province,
+      comment,
     });
     const order = await Order.create({
       userId,
