@@ -23,12 +23,11 @@ exports.getAllProduct = async (req, res, next) => {
 exports.getProductbyId = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const product = await Product.findAll({
+    const product = await Product.findOne({
       where: { id },
       attributes: { exclude: ['createdAt', 'updatedAt', 'isDeleted'] },
       include: {
         model: Sku,
-        // where: { status: true },
         attributes: { exclude: ['createdAt', 'updatedAt'] },
       },
     });
@@ -37,47 +36,57 @@ exports.getProductbyId = async (req, res, next) => {
     next(err);
   }
 };
-exports.getAllImported = async (req, res, next) => {};
-exports.getAllLocal = async (req, res, next) => {};
 
 exports.createProduct = async (req, res, next) => {
   try {
-    console.log('InCreate backend');
-    // console.log(req.file);
-    const { name, type, description, process, price, status } = req.body;
-    console.log();
-    // const result = await uploadPromise(req.file.path);
-    // const product = await Product.create({
-    //   name,
-    //   type,
-    //   description,
-    //   imageUrl: result.secure_url,
-    // });
-    // const sku = await Sku.bulkCreate([
-    //   {
-    //     process: process[0],
-    //     price: process[0] ? price[0] : null,
-    //     status: price[0] ? status[0] : false,
-    //     productId: product.id,
-    //   },
-    //   {
-    //     process: process[1],
-    //     price: process[1] ? price[1] : null,
-    //     status: price[1] ? status[1] : false,
-    //     productId: product.id,
-    //   },
-    //   {
-    //     process: process[2],
-    //     price: process[2] ? price[2] : null,
-    //     status: price[2] ? status[2] : false,
-    //     productId: product.id,
-    //   },
-    // ]);
-    // fs.unlinkSync(req.file.path);
-    // res.json({ message: 'Ceeate complete', product, sku });
-    res.json({ message: 'Create complete' });
+    const {
+      name,
+      type,
+      description,
+      wetprocess,
+      dryprocess,
+      honeyprocess,
+      wetprice,
+      dryprice,
+      honeyprice,
+      wetstatus,
+      drystatus,
+      honeystatus,
+    } = req.body;
+
+    const result = await uploadPromise(req.file.path);
+    fs.unlinkSync(req.file.path);
+    const product = await Product.create({
+      name,
+      type,
+      description,
+      imageUrl: result.secure_url,
+    });
+
+    const sku = await Sku.bulkCreate([
+      {
+        process: wetprocess,
+        price: wetprice ? wetprice : null,
+        status: wetstatus,
+        productId: product.id,
+      },
+      {
+        process: dryprocess,
+        price: dryprice ? dryprice : null,
+        status: drystatus,
+        productId: product.id,
+      },
+      {
+        process: honeyprocess,
+        price: honeyprice ? honeyprice : null,
+        status: honeystatus,
+        productId: product.id,
+      },
+    ]);
+    res.json({ message: 'Ceeate complete', product, sku });
   } catch (err) {
-    next(err);
+    console.log(err);
+    // next(err);
   }
 };
 exports.updateProduct = async (req, res, next) => {

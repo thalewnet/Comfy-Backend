@@ -6,8 +6,6 @@ const { uploadSingle } = require('../controllers/uploadCloud');
 const {
   getAllProduct,
   getProductbyId,
-  getAllImported,
-  getAllLocal,
   createProduct,
   updateProduct,
   deleteProduct,
@@ -17,9 +15,8 @@ const {
 router.put('/:productId/:skuId', updateProduct);
 router.get('/', getAllProduct);
 router.get('/:id', getProductbyId);
-// router.post('/create-product', uploadSingle, createProduct);
-router.post('/create-product', createProduct);
+router.post('/create-product', uploadSingle, createProduct);
+
 router.delete('/', deleteProduct);
-router.get('/imported', getAllImported);
-router.get('/local', getAllLocal);
+
 module.exports = router;

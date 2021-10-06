@@ -2,12 +2,11 @@ const util = require('util'); // ไว้สำหรับแปลง cbfn =>
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 
-const uploadPromise = util.promisify(cloudinary.uploader.upload);
+exports.uploadPromise = util.promisify(cloudinary.uploader.upload);
 
 const upload = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
-      console.log(file);
       cb(null, 'public/images');
     },
     filename: (req, file, cb) => {
@@ -30,6 +29,5 @@ const upload = multer({
     }
   },
 });
-
+console.log('.....................................................');
 exports.uploadSingle = upload.single('cloudinput');
-exports = { uploadPromise };

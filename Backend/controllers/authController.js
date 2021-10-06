@@ -16,6 +16,7 @@ exports.loginUser = async (req, res, next) => {
       return res.status(400).json({ message: 'Incorrect Email or Password' });
 
     const payload = {
+      id: user.id,
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
