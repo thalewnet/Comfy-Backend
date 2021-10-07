@@ -3,7 +3,7 @@ const { District } = require('../models');
 exports.getProvinces = async (req, res, next) => {
   try {
     const result = await District.findAll({
-      attributes: ['province'],
+      attributes: ['province', 'provinceCode'],
       group: ['province'],
     });
     const provinceList = result.map((item) => item.province);
