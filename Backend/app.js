@@ -32,6 +32,7 @@ app.use((req, res, next) => {
 });
 
 // Error MiddleWare
+
 app.use(errorController);
 
 const port = process.env.PORT || 8000;

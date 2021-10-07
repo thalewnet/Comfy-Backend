@@ -5,16 +5,19 @@ const { authenticate } = require('../controllers/authController');
 const {
   getProductInCart,
   createProductCart,
+  deleteProductCart,
+  getProductCartById,
+  updateProductCart,
 } = require('../controllers/cartController');
 // Show in summary order
-router.get('/', getProductInCart);
-
+router.get('/', authenticate, getProductInCart);
+router.get('/:id', authenticate, getProductCartById);
 // Click add to cart
-router.post('/', createProductCart);
+router.post('/', authenticate, createProductCart);
 
 // Click edit amount , choice detail
-// router.put('/:id', authenticate, updateProductCart);
+router.put('/:id', authenticate, updateProductCart);
 
 // Click delete item in cart
-// router.delete('/:id', authenticate, deleteProductCart);
+router.delete('/:id', authenticate, deleteProductCart);
 module.exports = router;

@@ -69,10 +69,10 @@ exports.getOrderbyId = async (req, res, next) => {};
 // create order and orderitem from cartitem
 exports.createOrder = async (req, res, next) => {
   try {
-    const { id: userId } = req.headers;
+    const user = req.user;
     const body = req.body;
     const shipment = await OrderItem.create({
-      userId,
+      userId: user.id,
       address,
       phoneNumber: phonenumber,
       subdistrict,
@@ -81,7 +81,7 @@ exports.createOrder = async (req, res, next) => {
       comment,
     });
     const order = await Order.create({
-      userId,
+      userId: user.id,
       shipmentId: shipment.id,
       totalPrice,
       paymentSlip: req.file.path,
