@@ -2,10 +2,6 @@ module.exports = (sequelize, DataTypes) => {
   const OrderItem = sequelize.define(
     'OrderItem',
     {
-      process: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
       roast: {
         type: DataTypes.STRING,
         allowNull: false,
