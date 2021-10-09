@@ -89,33 +89,73 @@ exports.createProduct = async (req, res, next) => {
     // next(err);
   }
 };
+
+// ตอนนี้ต้องอัปเดตรูปด้วยถึงจะสามารถอัปโหลดได้
+// อีก way นึงคือแยกอัปรูปกับอัปเดตรายการต่างๆ
 exports.updateProduct = async (req, res, next) => {
   try {
-    const { productId, skuId } = req.params;
-    const { name, description, process, price, status } = req.body;
-    // const result = await uploadPromise(req.file.path);
+    const { productId, wetSkuId, drySkuId, honeySkuId } = req.params;
+    const {
+      name,
+      description,
+      wetprocess,
+      dryprocess,
+      honeyprocess,
+      wetprice,
+      dryprice,
+      honeyprice,
+      wetstatus,
+      drystatus,
+      honeystatus,
+    } = req.body;
+
+    const result = await uploadPromise(req.file.path);
     const rows = await Product.update(
       {
         name,
         description,
-        imageUrl: 'dasdsadasdad',
-        // imageUrl: result.secure_url,
+        imageUrl: result.secure_url,
       },
       { where: { id: productId } }
     );
     if (!rows) return res.status(400).json({ message: 'Id does not match' });
-    const rows2 = await Sku.update(
+    const skuRow1 = await Sku.update(
       {
-        process,
-        price,
-        status,
+        process: wetprocess,
+        price: wetprice,
+        status: wetstatus,
         productId,
       },
       {
-        where: { id: skuId },
+        where: { id: wetSkuId },
       }
     );
-    if (!rows2) return res.status(400).json({ message: 'Id does not match' });
+    if (!skuRow1) return res.status(400).json({ message: 'Id does not match' });
+    const skuRow2 = await Sku.update(
+      {
+        process: dryprocess,
+        price: dryprice,
+        status: drystatus,
+        productId,
+      },
+      {
+        where: { id: drySkuId },
+      }
+    );
+    if (!skuRow2) return res.status(400).json({ message: 'Id does not match' });
+    const skuRow3 = await Sku.update(
+      {
+        process: honeyprocess,
+        price: honeyprice,
+        status: honeystatus,
+        productId,
+      },
+      {
+        where: { id: honeySkuId },
+      }
+    );
+    if (!skuRow3) return res.status(400).json({ message: 'Id does not match' });
+    fs.unlinkSync(req.file.path);
     res.status(201).json({ message: 'Updated success' });
   } catch (err) {
     next(err);

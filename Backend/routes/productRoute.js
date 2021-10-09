@@ -1,4 +1,5 @@
 const express = require('express');
+const { authenticate } = require('../controllers/authController');
 const router = express.Router();
 const productController = require('../controllers/productController');
 const { uploadSingle } = require('../controllers/uploadCloud');
@@ -12,10 +13,14 @@ const {
 } = productController;
 
 // router.put('/:productId/:skuId', uploadSingle ,updateProduct);
-router.put('/:productId/:skuId', updateProduct);
+router.put(
+  '/update-product/:productId/:wetSkuId/:drySkuId/:honeySkuId',
+  uploadSingle,
+  updateProduct
+);
+router.post('/create-product', authenticate, uploadSingle, createProduct);
 router.get('/', getAllProduct);
 router.get('/:id', getProductbyId);
-router.post('/create-product', uploadSingle, createProduct);
 
 router.delete('/', deleteProduct);
 
