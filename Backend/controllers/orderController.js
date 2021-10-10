@@ -8,7 +8,7 @@ const {
   OrderItem,
 } = require('../models');
 const { uploadPromise } = require('../controllers/uploadCloud');
-
+const fs = require('fs');
 // Get order by admin role on admin page
 exports.getAllOrder = async (req, res, next) => {
   try {
@@ -22,6 +22,18 @@ exports.getAllOrder = async (req, res, next) => {
           model: Shipment,
           attributes: { exclude: ['createdAt', 'updatedAt'] },
         },
+        {
+          model: OrderItem,
+          attributes: { exclude: ['createdAt', 'updatedAt'] },
+          include: {
+            model: Sku,
+            attributes: { exclude: ['createdAt', 'updatedAt'] },
+            include: {
+              model: Product,
+              attributes: { exclude: ['createdAt', 'updatedAt'] },
+            },
+          },
+        },
       ],
     });
     res.json({ orders });
@@ -34,7 +46,6 @@ exports.getAllOrder = async (req, res, next) => {
 exports.getEachUserOrder = async (req, res, next) => {
   try {
     const user = req.user;
-    // const { id: userId } = req.headers;
     const orders = await Order.findAll({
       where: { userId: user.id },
       attributes: { exclude: ['createdAt', 'updatedAt'] },
@@ -66,7 +77,41 @@ exports.getEachUserOrder = async (req, res, next) => {
     next(err);
   }
 };
-exports.getOrderbyId = async (req, res, next) => {};
+
+//Get order by admin on admin-checkorder
+exports.getOrderbyId = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const order = await Order.findOne({
+      where: { id },
+      include: [
+        {
+          model: User,
+          attributes: ['firstName', 'lastName'],
+        },
+        {
+          model: Shipment,
+          attributes: { exclude: ['createdAt', 'updatedAt'] },
+        },
+        {
+          model: OrderItem,
+          attributes: { exclude: ['createdAt', 'updatedAt'] },
+          include: {
+            model: Sku,
+            attributes: { exclude: ['createdAt', 'updatedAt'] },
+            include: {
+              model: Product,
+              attributes: { exclude: ['createdAt', 'updatedAt'] },
+            },
+          },
+        },
+      ],
+    });
+    res.json({ order });
+  } catch (err) {
+    next(err);
+  }
+};
 
 // create order and orderitem from cartitem
 exports.createOrder = async (req, res, next) => {
@@ -136,6 +181,19 @@ exports.createOrder = async (req, res, next) => {
 // Admin update order status
 exports.updateOrder = async (req, res, next) => {
   try {
+    const { id } = req.params;
+    const { ispaid, isverified, issent, trackingNumber } = req.body;
+    const rows = await Order.update(
+      {
+        ispaid,
+        isverified,
+        issent,
+        trackingNumber,
+      },
+      { where: { id } }
+    );
+    if (!rows) return res.status(404).json({ messsage: 'Id is not mathch' });
+    res.status(201).json({ messsage: 'Order has been Updated' });
   } catch (err) {
     next(err);
   }

@@ -14,8 +14,8 @@ const {
 
 router.get('/', getAllOrder);
 router.get('/userorder', authenticate, getEachUserOrder);
-router.get('/:id', getOrderbyId);
+router.get('/adminorder/:id', authenticate, getOrderbyId);
 router.post('/', authenticate, uploadSingle, createOrder);
-router.put('/', updateOrder);
+router.put('/:id', authenticate, updateOrder);
 router.delete('/', deleteOrder);
 module.exports = router;
