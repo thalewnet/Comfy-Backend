@@ -108,17 +108,31 @@ exports.updateProduct = async (req, res, next) => {
       drystatus,
       honeystatus,
     } = req.body;
+    console.log(req.body);
+    console.log(req.file);
+    if (req?.file?.path) {
+      const result = await uploadPromise(req.file.path);
+      const rows = await Product.update(
+        {
+          name,
+          description,
+          imageUrl: result.secure_url,
+        },
+        { where: { id: productId } }
+      );
+      if (!rows) return res.status(400).json({ message: 'Id does not match' });
+      fs.unlinkSync(req?.file?.path);
+    } else {
+      const rows = await Product.update(
+        {
+          name,
+          description,
+        },
+        { where: { id: productId } }
+      );
+      if (!rows) return res.status(400).json({ message: 'Id does not match' });
+    }
 
-    const result = await uploadPromise(req.file.path);
-    const rows = await Product.update(
-      {
-        name,
-        description,
-        imageUrl: result.secure_url,
-      },
-      { where: { id: productId } }
-    );
-    if (!rows) return res.status(400).json({ message: 'Id does not match' });
     const skuRow1 = await Sku.update(
       {
         process: wetprocess,
@@ -155,7 +169,7 @@ exports.updateProduct = async (req, res, next) => {
       }
     );
     if (!skuRow3) return res.status(400).json({ message: 'Id does not match' });
-    fs.unlinkSync(req.file.path);
+
     res.status(201).json({ message: 'Updated success' });
   } catch (err) {
     next(err);
