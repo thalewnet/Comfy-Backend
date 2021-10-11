@@ -1,5 +1,9 @@
 const express = require('express');
-const { authenticate } = require('../controllers/authController');
+const {
+  authenticate,
+  adminAuth,
+  userVerifty,
+} = require('../controllers/authController');
 const router = express.Router();
 const orderControlloer = require('../controllers/orderController');
 const { uploadSingle } = require('../controllers/uploadCloud');
@@ -12,10 +16,10 @@ const {
   getEachUserOrder,
 } = orderControlloer;
 
-router.get('/', getAllOrder);
-router.get('/userorder', authenticate, getEachUserOrder);
-router.get('/adminorder/:id', authenticate, getOrderbyId);
-router.post('/', authenticate, uploadSingle, createOrder);
-router.put('/:id', authenticate, updateOrder);
+router.get('/', authenticate, adminAuth, getAllOrder);
+router.get('/userorder', authenticate, userVerifty, getEachUserOrder);
+router.get('/adminorder/:id', authenticate, adminAuth, getOrderbyId);
+router.post('/', authenticate, adminAuth, uploadSingle, createOrder);
+router.put('/:id', authenticate, adminAuth, updateOrder);
 router.delete('/', deleteOrder);
 module.exports = router;

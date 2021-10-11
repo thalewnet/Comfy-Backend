@@ -77,3 +77,29 @@ exports.authenticate = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.adminAuth = async (req, res, next) => {
+  try {
+    const user = req.user;
+    if (user.role !== 'admin') {
+      res.status(401).json({ message: 'Unauthorize' });
+    } else {
+      next();
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.userVerifty = async (req, res, next) => {
+  try {
+    const user = req.user;
+    if (user.role !== 'user') {
+      res.status(401).json({ message: 'Unauthorize' });
+    } else {
+      next();
+    }
+  } catch (err) {
+    next(rr);
+  }
+};

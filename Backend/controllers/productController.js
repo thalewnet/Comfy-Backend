@@ -11,14 +11,23 @@ exports.getAllProduct = async (req, res, next) => {
       });
       res.json({ products: products });
     } else {
-      const products = await Product.findAll();
+      const products = await Product.findAll({
+        where: { isDeleted: false },
+      });
       res.json({ products: products });
     }
   } catch (err) {
     next(err);
   }
 };
-
+exports.getAllProducAdminPage = async (req, res, next) => {
+  try {
+    const products = await Product.findAll({});
+    res.json({ products: products });
+  } catch (err) {
+    next(err);
+  }
+};
 // สำหรับดึงข้อมูลไปสร้างหน้าเลือก ข้อมูล
 exports.getProductbyId = async (req, res, next) => {
   try {
@@ -177,10 +186,27 @@ exports.updateProduct = async (req, res, next) => {
 };
 exports.deleteProduct = async (req, res, next) => {
   try {
+    const user = req.user;
     const { id } = req.params;
-    const rows = await Product.update({ isDeleted: true }, { where: { id } });
+    if (user.role === 'admin') {
+      const rows = await Product.update({ isDeleted: true }, { where: { id } });
+      if (!rows) return res.status(400).json({ message: 'Id does not Match' });
+      res.status(204).json({ message: 'Deleted' });
+    } else {
+      res.status(401).json({ message: 'Unauthorize' });
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.reactiveProduct = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+    const rows = await Product.update({ isDeleted: false }, { where: { id } });
     if (!rows) return res.status(400).json({ message: 'Id does not Match' });
-    res.status(204).json({});
+    res.status(204).json({ message: 'Deleted' });
   } catch (err) {
     next(err);
   }

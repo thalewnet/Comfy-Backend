@@ -193,7 +193,7 @@ exports.updateOrder = async (req, res, next) => {
       { where: { id } }
     );
     if (!rows) return res.status(404).json({ messsage: 'Id is not mathch' });
-    res.status(201).json({ messsage: 'Order has been Updated' });
+    res.status(201).json({ message: 'Saved' });
   } catch (err) {
     next(err);
   }
